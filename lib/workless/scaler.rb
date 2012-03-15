@@ -12,7 +12,7 @@ module Delayed
         base.class_eval do
           before_destroy "self.class.scaler.down"
           before_create "self.class.scaler.up"
-          after_update "self.class.scaler.down", :unless => Proc.new {|r| r.failed_at.nil? }
+          after_update "self.class.scaler.down", :unless => Proc.new {|r| r.failed_at }
         end
         
       end
