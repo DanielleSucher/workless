@@ -13,7 +13,9 @@ module Delayed
         end
 
         def self.down
-          client.ps_scale(ENV['APP_NAME'], :type => 'worker', :qty => 0) unless self.workers == 0 || (self.jobs != [] && self.jobs.where("locked_by IS NOT ?", nil).count > 0)
+          # client.ps_scale(ENV['APP_NAME'], :type => 'worker', :qty => 0) if self.workers != 0 && (self.jobs == [] || self.jobs.where("locked_by IS NOT ?", nil).count == self.jobs.count)
+          client.ps_scale(ENV['APP_NAME'], :type => 'worker', :qty => 0) if self.workers != 0 && self.jobs.where("locked_by IS NULL or attempts > 2").count == 0
+
         end
 
         def self.workers
