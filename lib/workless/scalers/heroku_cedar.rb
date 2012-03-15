@@ -13,7 +13,7 @@ module Delayed
         end
 
         def self.down
-          self.jobs.destroy_all if self.workers != 0 && self.jobs != [] && self.jobs.where("locked_by IS NOT ?", nil).count > 0
+          self.jobs.where("locked_by IS NOT ?", nil).destroy_all if self.workers != 0 && self.jobs != []
           client.ps_scale(ENV['APP_NAME'], :type => 'worker', :qty => 0) unless self.workers == 0 || self.jobs.count > 0
         end
 
